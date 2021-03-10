@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -28,7 +28,7 @@
 
 #if BOTH(HAS_LCD_MENU, CANCEL_OBJECTS)
 
-#include "menu.h"
+#include "menu_item.h"
 #include "menu_addon.h"
 
 #include "../../feature/cancel_object.h"
@@ -43,7 +43,7 @@ static void lcd_cancel_object_confirm() {
   };
   MenuItem_confirm::confirm_screen(
     []{
-      cancelable.cancel_object(MenuItemBase::itemIndex - 1);
+      cancelable.cancel_object(MenuItemBase::itemIndex);
       ui.completion_feedback();
       ui.goto_previous_screen();
     },
@@ -62,7 +62,7 @@ void menu_cancelobject() {
   for (int8_t i = -1; i < cancelable.object_count; i++) {
     if (i == ao) continue;                                          // Active is drawn on -1 index
     const int8_t j = i < 0 ? ao : i;                                // Active or index item
-    MENU_ITEM_IF (!cancelable.is_canceled(j)) {                     // Not canceled already?
+    if (!cancelable.is_canceled(j)) {                               // Not canceled already?
       SUBMENU_N(j, MSG_CANCEL_OBJECT_N, lcd_cancel_object_confirm); // Offer the option.
       if (i < 0) SKIP_ITEM();                                       // Extra line after active
     }
